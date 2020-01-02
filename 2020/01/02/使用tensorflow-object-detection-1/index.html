@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    使用tensorflow object detection(1) |  Rinz&#39;s Blog
+  </title>
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-使用tensorflow-object-detection-1" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  使用tensorflow object detection(1)
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/01/02/%E4%BD%BF%E7%94%A8tensorflow-object-detection-1/" class="article-date">
+  <time datetime="2020-01-02T15:59:44.000Z" itemprop="datePublished">2020-01-02</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><p>使用猫狗数据集在本地电脑做迁移学习，获得能在手机上使用的SSD MobileNet模型<br><a href="https://github.com/tensorflow/models/tree/master/research/object_detection" target="_blank" rel="noopener">Github地址</a><br><a href="https://medium.com/tensorflow/training-and-serving-a-realtime-mobile-object-detector-in-30-minutes-with-cloud-tpus-b78971cf1193" target="_blank" rel="noopener">参考教程Training and serving a realtime mobile object detector in 30 minutes with Cloud TPUs</a></p>
+<a id="more"></a>
+
+<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>Ubuntu 18.04.2 docker下，使用镜像：<br>tensorflow/tensorflow   1.15.0-gpu-py3<br>nvidia/cuda             10.1-devel  </p>
+<h3 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h3><ol>
+<li><p>下载数据集<br><a href="http://download.tensorflow.org/models/object_detection/pet_faces_tfrecord.tar.gz" target="_blank" rel="noopener">tfrecord文件下载地址</a><br>数据集包括7400张图片（37个猫狗种类各200张）<br>pet_label_map.pbtxt 文件是37个宠物分类（label文件）</p>
+</li>
+<li><p>使用SSD MobileNet checkpoint文件作迁移学习<br><a href="http://download.tensorflow.org/models/object_detection" target="_blank" rel="noopener">checkpoint文件下载地址</a><br>解压ssd_mobilenet_v1_0.75_depth_300x300_coco14_sync_2018_07_03.tar.gz<br>使用model.ckpt.* 3个文件</p>
+</li>
+<li><p>配置config文件 ssd_mobilenet_v1_0.75_depth_quantized_300x300_pets_sync.config</p>
+</li>
+<li><p>文件结构</p>
+<blockquote>
+<p>+data<br>&emsp;-label_map file<br>&emsp;-train TFRecord file<br>&emsp;-eval TFRecord file<br>+models<br>&emsp;+ model<br>&emsp;&emsp;-pipeline config file<br>&emsp;&emsp;+train<br>&emsp;&emsp;+eval</p>
+</blockquote>
+</li>
+<li><p>环境：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip install Cython contextlib2 pillow lxml matplotlib -i https:&#x2F;&#x2F;pypi.tuna.tsinghua.edu.cn&#x2F;simple&#x2F;</span><br><span class="line">.&#x2F;protoc&#x2F;bin&#x2F;protoc object_detection&#x2F;protos&#x2F;*.proto --python_out&#x3D;.</span><br><span class="line">export PYTHONPATH&#x3D;$PYTHONPATH:&#96;pwd&#96;:&#96;pwd&#96;&#x2F;slim</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python object_detection&#x2F;builders&#x2F;model_builder_test.py</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># From the tensorflow&#x2F;models&#x2F;research&#x2F; directory</span><br><span class="line">PIPELINE_CONFIG_PATH&#x3D;&#123;path to pipeline config file&#125;</span><br><span class="line">MODEL_DIR&#x3D;&#123;path to model directory&#125;</span><br><span class="line">NUM_TRAIN_STEPS&#x3D;50000</span><br><span class="line">SAMPLE_1_OF_N_EVAL_EXAMPLES&#x3D;1</span><br><span class="line">python object_detection&#x2F;model_main.py \</span><br><span class="line">    --pipeline_config_path&#x3D;$&#123;PIPELINE_CONFIG_PATH&#125; \</span><br><span class="line">    --model_dir&#x3D;$&#123;MODEL_DIR&#125; \</span><br><span class="line">    --num_train_steps&#x3D;$&#123;NUM_TRAIN_STEPS&#125; \</span><br><span class="line">    --sample_1_of_n_eval_examples&#x3D;$SAMPLE_1_OF_N_EVAL_EXAMPLES \</span><br><span class="line">    --alsologtostderr</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Tensorboard查看训练过程<br><img src="/images/1.png" alt="Screenshot from tensorboard-mAP.png"><br><img src="/images/2.png" alt="Screenshot from tensorboard-image.png"></p>
+</li>
+</ol>
+<ol start="9">
+<li>训练结果转化成tflite<br>graph文件转bp<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">export CONFIG_FILE&#x3D;&#x2F;research&#x2F;pet_faces&#x2F;models&#x2F;model&#x2F;ssd_mobilenet_v1_pets.config</span><br><span class="line">export CHECKPOINT_PATH&#x3D;&#x2F;research&#x2F;pet_faces&#x2F;models&#x2F;model&#x2F;model.ckpt-100000</span><br><span class="line">export OUTPUT_DIR&#x3D;&#x2F;research&#x2F;tflite</span><br><span class="line"></span><br><span class="line">python object_detection&#x2F;export_tflite_ssd_graph.py \</span><br><span class="line">--pipeline_config_path&#x3D;$CONFIG_FILE \</span><br><span class="line">--trained_checkpoint_prefix&#x3D;$CHECKPOINT_PATH \</span><br><span class="line">--output_directory&#x3D;$OUTPUT_DIR \</span><br><span class="line">--add_postprocessing_op&#x3D;true</span><br></pre></td></tr></table></figure>
+bp转tflite<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">export OUTPUT_DIR&#x3D;&#x2F;research&#x2F;tflite</span><br><span class="line"></span><br><span class="line">toco \</span><br><span class="line">--graph_def_file&#x3D;$OUTPUT_DIR&#x2F;tflite_graph.pb \</span><br><span class="line">--output_file&#x3D;$OUTPUT_DIR&#x2F;detect.tflite \</span><br><span class="line">--input_shapes&#x3D;1,300,300,3 \</span><br><span class="line">--input_arrays&#x3D;normalized_input_image_tensor \</span><br><span class="line">--output_arrays&#x3D;&#39;TFLite_Detection_PostProcess&#39;,&#39;TFLite_Detection_PostProcess:1&#39;,&#39;TFLite_Detection_PostProcess:2&#39;,&#39;TFLite_Detection_PostProcess:3&#39;  \</span><br><span class="line">--inference_type&#x3D;QUANTIZED_UINT8 \</span><br><span class="line">--mean_values&#x3D;128 \</span><br><span class="line">--std_dev_values&#x3D;128 \</span><br><span class="line">--change_concat_input_ranges&#x3D;false \</span><br><span class="line">--allow_custom_ops</span><br></pre></td></tr></table></figure>
+tflite文件大小6.1M</li>
+</ol>
+
+      
+      <!-- 打赏 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/01/02/%E4%BD%BF%E7%94%A8tensorflow-object-detection-1/" data-id="ck4wx1ti00000inc6djts0s6i"
+        class="article-share-link">分享</a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+
+  
+
+  
+
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        Lacus Rinz
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>PV:<span id="busuanzi_value_page_pv"></span></li>
+  <li>UV:<span id="busuanzi_value_site_uv"></span></li>
+</ul>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Rinz&#39;s Blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目录</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+  
+<script src="/js/tocbot.min.js"></script>
+
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+    });
+  </script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: false
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+  </div>
+</body>
+
+</html>
