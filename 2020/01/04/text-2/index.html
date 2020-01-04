@@ -95,8 +95,9 @@ eval_spec：一个 EvalSpec 实例。用来配置评估过程、（可选）模�
 <p>mode 指定当前是处于训练、验证还是预测状态；<br>predictions 是预测的一个张量，或者是由张量组成的一个字典；<br>loss 是损失张量；<br>train_op 指定优化操作；<br>eval_metric_ops 指定各种评估度量的字典，这个字典的值必须是如下两种形式：</p>
 <ol>
 <li>Metric 类的实例；</li>
-<li>调用某个评估度量函数的结果对 (metric_tensor, update_op)；<br>参数 export_outputs 只用于模型保存，描述了导出到 SavedModel 的输出格式；参数 scaffold 是一个 tf.train.Scaffold 对象，可以在训练阶段初始化、保存等时使用。  </li>
+<li>调用某个评估度量函数的结果对 (metric_tensor, update_op)；</li>
 </ol>
+<p>参数 export_outputs 只用于模型保存，描述了导出到 SavedModel 的输出格式；参数 scaffold 是一个 tf.train.Scaffold 对象，可以在训练阶段初始化、保存等时使用。  </p>
 <p><strong>train_spec</strong> 参数接收一个 tf.estimator.TrainSpec 实例。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># TrainSpec的参数</span></span><br><span class="line">__new__(</span><br><span class="line">    cls, <span class="comment"># 这个参数不用指定，忽略即可。</span></span><br><span class="line">    input_fn,</span><br><span class="line">    max_steps=<span class="literal">None</span>,</span><br><span class="line">    hooks=<span class="literal">None</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <p>input_fn： 参数用来指定数据输入。<br>max_steps： 参数用来指定训练的最大步数，这是训练的唯一终止条件。<br>hooks： 参数可以加载tf.train.SessionRunHook，用来在 session 运行的时候做一些额外的操作。这个hooks是一个为estimator服务的类，它有begin、after_create_session、before_run、after_run、end方法，分别用于在创建Session之前、创建Session之后、Session运行之前、Session运行之后以及Session即将关闭之前执行一些需要的操作。  </p>
