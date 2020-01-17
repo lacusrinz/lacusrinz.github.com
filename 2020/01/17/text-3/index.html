@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    使用TensorFlow Object Detection API(3) |  Rinz&#39;s Blog
+  </title>
+  
+  <link rel="shortcut icon" href="/logo.png" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-text-3" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  使用TensorFlow Object Detection API(3)
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/01/17/text-3/" class="article-date">
+  <time datetime="2020-01-17T13:40:59.000Z" itemprop="datePublished">2020-01-17</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>使用多GPU，在SSD_Mobilenet_v1模型上训练文1中的猫狗数据集</p>
+<a id="more"></a>
+
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>Ubuntu 18.04.2 下使用docker镜像：<br>tensorflow/tensorflow   1.15.0-gpu-py3<br>CUDA Version               10.2</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>直接使用<code>model_main.py</code>文件默认使用第一块GPU， 需要将<code>train_and_evaluate</code>方法中的的<code>estimator</code>设置为支持多GPU，这里我们使用最简单的单机双卡，配置如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mirrored_strategy = tf.contrib.distribute.MirroredStrategy(num_gpus=<span class="number">2</span>, cross_device_ops=tf.distribute.HierarchicalCopyAllReduce(num_packs=<span class="number">1</span>))</span><br><span class="line">config = tf.estimator.RunConfig(model_dir=FLAGS.model_dir, </span><br><span class="line">                                  train_distribute=mirrored_strategy, </span><br><span class="line">                                  )</span><br></pre></td></tr></table></figure>
+
+<p>直接运行会有各种各样的报错，报错与tf版本相关</p>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>通过以下参考 <a href="https://github.com/tensorflow/models/issues/5421" target="_blank" rel="noopener">issue#5421</a>，进行调整</p>
+<p><strong>关于版本</strong><br>tf 1.13.1 版本以前的，无法进行多GPU训练</p>
+<p><strong>报错处理</strong></p>
+<p>问题1</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ValueError: Variable FeatureExtractor/MobilenetV2/Conv/weights/replica_1/ExponentialMovingAverage/ does not exist, or was not created with tf.get_variable(). Did you mean to set reuse=tf.AUTO_REUSE in VarScope?</span><br></pre></td></tr></table></figure>
+<p>具体内容可以参考 <a href="https://github.com/tensorflow/tensorflow/issues/27392" target="_blank" rel="noopener">issue#27392</a><br>可以通过在训练中关闭<code>use_moving_average</code>来暂时解决</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">train_config: &#123;</span><br><span class="line">  batch_size: 2</span><br><span class="line">  optimizer &#123;</span><br><span class="line">    rms_prop_optimizer: &#123;</span><br><span class="line">      learning_rate: &#123;</span><br><span class="line">        exponential_decay_learning_rate &#123;</span><br><span class="line">          initial_learning_rate: 0.004</span><br><span class="line">          decay_steps: 800720</span><br><span class="line">          decay_factor: 0.95</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      momentum_optimizer_value: 0.9</span><br><span class="line">      decay: 0.9</span><br><span class="line">      epsilon: 1.0</span><br><span class="line">    &#125;</span><br><span class="line">    use_moving_average: false  # add this line</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>问题2</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">  File "/data/fanzong/miniconda3/envs/tf_cuda10/lib/python3.7/site-packages/tensorflow/python/distribute/distribute_lib.py", line 126, in _require_cross_replica_or_default_context_extended</span><br><span class="line">    raise RuntimeError("Method requires being in cross-replica context, use "</span><br><span class="line">RuntimeError: Method requires being in cross-replica context, use get_replica_context().merge_call()</span><br></pre></td></tr></table></figure>
+<p>可以通过注释掉<code>model_lib.py</code>里面的<code>model_fn</code>方法下面scaffold相关代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment"># EVAL executes on CPU, so use regular non-TPU EstimatorSpec.</span></span><br><span class="line">  <span class="keyword">if</span> use_tpu <span class="keyword">and</span> mode != tf.estimator.ModeKeys.EVAL:</span><br><span class="line">    <span class="keyword">return</span> tf.contrib.tpu.TPUEstimatorSpec(</span><br><span class="line">        mode=mode,</span><br><span class="line">        scaffold_fn=scaffold_fn,</span><br><span class="line">        predictions=detections,</span><br><span class="line">        loss=total_loss,</span><br><span class="line">        train_op=train_op,</span><br><span class="line">        eval_metrics=eval_metric_ops,</span><br><span class="line">        export_outputs=export_outputs)</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    <span class="comment">## for multi gpu training</span></span><br><span class="line">    <span class="comment"># if scaffold is None:</span></span><br><span class="line">    <span class="comment">#   keep_checkpoint_every_n_hours = (</span></span><br><span class="line">    <span class="comment">#       train_config.keep_checkpoint_every_n_hours)</span></span><br><span class="line">    <span class="comment">#   saver = tf.train.Saver(</span></span><br><span class="line">    <span class="comment">#       sharded=True,</span></span><br><span class="line">    <span class="comment">#       keep_checkpoint_every_n_hours=keep_checkpoint_every_n_hours,</span></span><br><span class="line">    <span class="comment">#       save_relative_paths=True)</span></span><br><span class="line">    <span class="comment">#   tf.add_to_collection(tf.GraphKeys.SAVERS, saver)</span></span><br><span class="line">    <span class="comment">#   scaffold = tf.train.Scaffold(saver=saver)</span></span><br><span class="line">    <span class="keyword">return</span> tf.estimator.EstimatorSpec(</span><br><span class="line">        mode=mode,</span><br><span class="line">        predictions=detections,</span><br><span class="line">        loss=total_loss,</span><br><span class="line">        train_op=train_op,</span><br><span class="line">        eval_metric_ops=eval_metric_ops,</span><br><span class="line">        export_outputs=export_outputs,</span><br><span class="line">        scaffold=scaffold)</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> model_fn</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>修改后的代码正常运行，使用2块1070ti显卡，10w步耗时8小时，相较文1中12+小时有一定提升。</p>
+
+      
+      <!-- 打赏 -->
+      
+        <div id="reward-btn">
+          打赏
+        </div>
+        
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lacusrinz.github.com/2020/01/17/text-3/" data-id="ck5i9psvy00005kc6ammicmpa"
+        class="article-share-link">分享</a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+    
+      <a href="/2020/01/04/text-2/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">使用TensorFlow Object Detection API(2)</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        Lacus Rinz
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>PV:<span id="busuanzi_value_page_pv"></span></li>
+  <li>UV:<span id="busuanzi_value_site_uv"></span></li>
+</ul>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/logo.png" alt="Rinz&#39;s Blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目录</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+  
+<script src="/js/tocbot.min.js"></script>
+
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+    });
+  </script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: false
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+  </div>
+</body>
+
+</html>
