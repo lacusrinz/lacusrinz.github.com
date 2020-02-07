@@ -1,5 +1,5 @@
 ---
-title: 使用tensorflow object detection(2)
+title: 使用TensorFlow Object Detection API(2)
 date: 2020-01-04 16:20:39
 tags:
 ---
@@ -106,8 +106,10 @@ loss 是损失张量；
 train_op 指定优化操作；  
 eval_metric_ops 指定各种评估度量的字典，这个字典的值必须是如下两种形式：
 1. Metric 类的实例；
-2. 调用某个评估度量函数的结果对 (metric_tensor, update_op)；
-参数 export_outputs 只用于模型保存，描述了导出到 SavedModel 的输出格式；参数 scaffold 是一个 tf.train.Scaffold 对象，可以在训练阶段初始化、保存等时使用。  
+2. 调用某个评估度量函数的结果对 (metric_tensor, update_op)；  
+
+参数 export_outputs 只用于模型保存，描述了导出到 SavedModel 的输出格式；  
+参数 scaffold 是一个 tf.train.Scaffold 对象，可以在训练阶段初始化、保存等时使用。  
   
     
 **train_spec** 参数接收一个 tf.estimator.TrainSpec 实例。

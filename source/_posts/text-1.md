@@ -1,5 +1,5 @@
 ---
-title: 使用tensorflow object detection(1)
+title: 使用TensorFlow Object Detection API(1)
 date: 2020-01-02 23:59:44
 tags:
 ---
