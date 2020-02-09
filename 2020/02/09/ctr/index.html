@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    使用deepCTR库实践 |  Rinz&#39;s Blog
+  </title>
+  
+  <link rel="shortcut icon" href="/logo.png" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-ctr" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  使用deepCTR库实践
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/02/09/ctr/" class="article-date">
+  <time datetime="2020-02-09T12:53:58.000Z" itemprop="datePublished">2020-02-09</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>使用deepCTR库快速完成一个deepFM模型训练</p>
+<a id="more"></a>
+
+<p><a href="https://github.com/shenweichen/DeepCTR" target="_blank" rel="noopener">DeepCTR</a></p>
+<h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><p>Google Driver + Google Colaboratory<br>在Driver中创建<code>ctr.ipynb</code>用Colaboratory打开</p>
+<h2 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h2><p>数据集我们使用Kaggle上比赛 <a href="https://www.kaggle.com/c/criteo-display-ad-challenge" target="_blank" rel="noopener">Criteo Display Advertising Challenge Predict click-through rates on display ads</a> 的数据集<br>Kaggle网站上的数据下载地址已失效，下载地址<a href="https://s3-eu-west-1.amazonaws.com/kaggle-display-advertising-challenge-dataset/dac.tar.gz" target="_blank" rel="noopener">点此</a></p>
+<h3 id="准备原始数据"><a href="#准备原始数据" class="headerlink" title="准备原始数据"></a>准备原始数据</h3><p>连入Google Driver</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from google.colab import drive</span><br><span class="line"></span><br><span class="line">drive.mount(&quot;.&#x2F;gdrive&quot;, force_remount&#x3D;True)</span><br><span class="line"></span><br><span class="line">%cd &quot;.&#x2F;gdrive&#x2F;My Drive&#x2F;deepCTR&#x2F;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>下载criteo数据集</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%cd raw</span><br><span class="line">!wget --no-check-certificate https:&#x2F;&#x2F;s3-eu-west-1.amazonaws.com&#x2F;kaggle-display-advertising-challenge-dataset&#x2F;dac.tar.gz</span><br></pre></td></tr></table></figure>
+<p>在Google Driver中解压<br>train.txt 11G<br>test.txt 1.4G<br>源文件太大，我们取前100w行做训练</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!head -n 1000000 train.txt &gt; train_sub100w.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h2><p>因为Colaboratory环境有有GPU，所有我们安装DeepCTR的GPU版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install deepctr[gpu]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> log_loss, roc_auc_score</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> LabelEncoder, MinMaxScaler</span><br><span class="line"></span><br><span class="line">%tensorflow_version <span class="number">2.</span>x</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h3><p>数据集本身没有column名，手动加上，<br>label是结果<br>I1-I13是连续型的类型<br>C1-C26是离散型的数据<br>所有数据都hash脱敏</p>
+<p><strong>导入csv并补0</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">columns = [<span class="string">'label'</span>,<span class="string">'I1'</span>,<span class="string">'I2'</span>,<span class="string">'I3'</span>,<span class="string">'I4'</span>,<span class="string">'I5'</span>,<span class="string">'I6'</span>,<span class="string">'I7'</span>,<span class="string">'I8'</span>,<span class="string">'I9'</span>,<span class="string">'I10'</span>,<span class="string">'I11'</span>,<span class="string">'I12'</span>,<span class="string">'I13'</span>,<span class="string">'C1'</span>,<span class="string">'C2'</span>,<span class="string">'C3'</span>,<span class="string">'C4'</span>,<span class="string">'C5'</span>,<span class="string">'C6'</span>,<span class="string">'C7'</span>,<span class="string">'C8'</span>,<span class="string">'C9'</span>,<span class="string">'C10'</span>,<span class="string">'C11'</span>,<span class="string">'C12'</span>,<span class="string">'C13'</span>,<span class="string">'C14'</span>,<span class="string">'C15'</span>,<span class="string">'C16'</span>,<span class="string">'C17'</span>,<span class="string">'C18'</span>,<span class="string">'C19'</span>,<span class="string">'C20'</span>,<span class="string">'C21'</span>,<span class="string">'C22'</span>,<span class="string">'C23'</span>,<span class="string">'C24'</span>,<span class="string">'C25'</span>,<span class="string">'C26'</span>]</span><br><span class="line">data = pd.read_csv(<span class="string">'./raw/train_sub100w.txt'</span>, names=columns, sep=<span class="string">'\t'</span>)</span><br><span class="line">print(data)</span><br><span class="line"></span><br><span class="line">sparse_features = [<span class="string">'C'</span> + str(i) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">27</span>)]</span><br><span class="line">dense_features = [<span class="string">'I'</span> + str(i) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">14</span>)]</span><br><span class="line"></span><br><span class="line">data[sparse_features] = data[sparse_features].fillna(<span class="string">'-1'</span>, )</span><br><span class="line">data[dense_features] = data[dense_features].fillna(<span class="number">0</span>, )</span><br><span class="line">target = [<span class="string">'label'</span>]</span><br><span class="line">print(data)</span><br></pre></td></tr></table></figure>
+<p>输出<br><img src="1-1.png" alt="1-1"></p>
+<p><strong>数据编码和归一化</strong><br>LabelEncoder可以将标签分配一个 0—n classes之间的编码 fit_transform(self, y) Fit label encoder and return encoded labels</p>
+<p>MinMaxScaler将属性缩放到一个指定的最大和最小值（通常是1-0）之间</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> sparse_features:</span><br><span class="line">  lbe = LabelEncoder()</span><br><span class="line">  data[feat] = lbe.fit_transform(data[feat])</span><br><span class="line">mms = MinMaxScaler(feature_range=(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">data[dense_features] = mms.fit_transform(data[dense_features])</span><br><span class="line">print(data)</span><br></pre></td></tr></table></figure>
+<p>输出<br><img src="1-2.png" alt="1-2"><br>可以看到连续型的I字段都已经呗归一化到0-1之间<br>离散型的C字段每个hash值都被分配了一个编号，例如C25的第一行第二行都是e8b83407，编码后都是58</p>
+<p><strong>获取feature name</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> deepctr.models <span class="keyword">import</span> DeepFM</span><br><span class="line"><span class="keyword">from</span> deepctr.inputs <span class="keyword">import</span>  SparseFeat, DenseFeat, get_feature_names</span><br><span class="line"></span><br><span class="line"><span class="comment"># count #unique features for each sparse field,and record dense feature field name</span></span><br><span class="line"></span><br><span class="line">fixlen_feature_columns = [SparseFeat(feat, vocabulary_size=data[feat].nunique(),embedding_dim=<span class="number">4</span>) </span><br><span class="line">              <span class="keyword">for</span> i,feat <span class="keyword">in</span> enumerate(sparse_features)] + [DenseFeat(feat, <span class="number">1</span>,) </span><br><span class="line">              <span class="keyword">for</span> feat <span class="keyword">in</span> dense_features</span><br><span class="line">              ]</span><br><span class="line"></span><br><span class="line">dnn_feature_columns = fixlen_feature_columns</span><br><span class="line">linear_feature_columns = fixlen_feature_columns</span><br><span class="line"></span><br><span class="line">feature_names = get_feature_names(linear_feature_columns + dnn_feature_columns)</span><br><span class="line"></span><br><span class="line">print(feature_names)</span><br></pre></td></tr></table></figure>
+<p>输出<br>[‘C1’, ‘C2’, ‘C3’, ‘C4’, ‘C5’, ‘C6’, ‘C7’, ‘C8’, ‘C9’, ‘C10’, ‘C11’, ‘C12’, ‘C13’, ‘C14’, ‘C15’, ‘C16’, ‘C17’, ‘C18’, ‘C19’, ‘C20’, ‘C21’, ‘C22’, ‘C23’, ‘C24’, ‘C25’, ‘C26’, ‘I1’, ‘I2’, ‘I3’, ‘I4’, ‘I5’, ‘I6’, ‘I7’, ‘I8’, ‘I9’, ‘I10’, ‘I11’, ‘I12’, ‘I13’]</p>
+<p><strong>构筑input data</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">train, test = train_test_split(data, test_size=<span class="number">0.2</span>)</span><br><span class="line">train_model_input = &#123;name:train[name] <span class="keyword">for</span> name <span class="keyword">in</span> feature_names&#125;</span><br><span class="line">test_model_input = &#123;name:test[name] <span class="keyword">for</span> name <span class="keyword">in</span> feature_names&#125;</span><br><span class="line"><span class="keyword">for</span> name <span class="keyword">in</span> feature_names:</span><br><span class="line">  print(name)</span><br><span class="line">  s = []</span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">    s.append(train_model_input[name].tolist()[i])</span><br><span class="line">  print(s)</span><br></pre></td></tr></table></figure>
+<p>输出每个column包含的前9个值（节选）<br><img src="1-3.png" alt="1-3"></p>
+<h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>设置输出地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">output_path &#x3D; &quot;.&#x2F;output&quot;</span><br><span class="line">target_path &#x3D; &quot;.&#x2F;output&#x2F;checkpoint_weights.hdf5&quot;</span><br></pre></td></tr></table></figure>
+<p><strong>Keras fit方法的定义</strong></p>
+<blockquote>
+<p>fit(self, x=None, y=None, batch_size=None, epochs=1, verbose=1, callbacks=None, validation_split=0.0, validation_data=None, shuffle=True, class_weight=None, sample_weight=None, initial_epoch=0, steps_per_epoch=None, validation_steps=None)</p>
+</blockquote>
+<blockquote>
+<p>x：输入数据。如果模型只有一个输入，那么x的类型是numpy array，如果模型有多个输入，那么x的类型应当为list，list的元素是对应于各个输入的numpy array。如果模型的每个输入都有名字，则可以传入一个字典，将输入名与其输入数据对应起来。</p>
+</blockquote>
+<blockquote>
+<p>y：标签，numpy array。如果模型有多个输出，可以传入一个numpy array的list。如果模型的输出拥有名字，则可以传入一个字典，将输出名与其标签对应起来。</p>
+</blockquote>
+<blockquote>
+<p>batch_size：整数，指定进行梯度下降时每个batch包含的样本数。训练时一个batch的样本会被计算一次梯度下降，使目标函数优化一步。</p>
+</blockquote>
+<blockquote>
+<p>epochs：整数，训练终止时的epoch值，训练将在达到该epoch值时停止，当没有设置initial_epoch时，它就是训练的总轮数，否则训练的总轮数为epochs - inital_epoch</p>
+</blockquote>
+<blockquote>
+<p>verbose：日志显示，0为不在标准输出流输出日志信息，1为输出进度条记录，2为每个epoch输出一行记录</p>
+</blockquote>
+<blockquote>
+<p>callbacks：list，其中的元素是keras.callbacks.Callback的对象。这个list中的回调函数将会在训练过程中的适当时机被调用，参考回调函数</p>
+</blockquote>
+<blockquote>
+<p>validation_split：0~1之间的浮点数，用来指定训练集的一定比例数据作为验证集。验证集将不参与训练，并在每个epoch结束后测试的模型的指标，如损失函数、精确度等。注意，validation_split的划分在shuffle之后，因此如果你的数据本身是有序的，需要先手工打乱再指定validation_split，否则可能会出现验证集样本不均匀。</p>
+</blockquote>
+<blockquote>
+<p>validation_data：形式为（X，y）或（X，y，sample_weights）的tuple，是指定的验证集。此参数将覆盖validation_spilt。</p>
+</blockquote>
+<blockquote>
+<p>shuffle：布尔值，表示是否在训练过程中每个epoch前随机打乱输入样本的顺序。</p>
+</blockquote>
+<blockquote>
+<p>class_weight：字典，将不同的类别映射为不同的权值，该参数用来在训练过程中调整损失函数（只能用于训练）。该参数在处理非平衡的训练数据（某些类的训练样本数很少）时，可以使得损失函数对样本数不足的数据更加关注。</p>
+</blockquote>
+<blockquote>
+<p>sample_weight：权值的numpy array，用于在训练时调整损失函数（仅用于训练）。可以传递一个1D的与样本等长的向量用于对样本进行1对1的加权，或者在面对时序数据时，传递一个的形式为（samples，sequence_length）的矩阵来为每个时间步上的样本赋不同的权。这种情况下请确定在编译模型时添加了sample_weight_mode=’temporal’。</p>
+</blockquote>
+<blockquote>
+<p>initial_epoch: 从该参数指定的epoch开始训练，在继续之前的训练时有用。</p>
+</blockquote>
+<blockquote>
+<p>steps_per_epoch: 一个epoch包含的步数（每一步是一个batch的数据送入），当使用如TensorFlow数据Tensor之类的输入张量进行训练时，默认的None代表自动分割，即数据集样本数/batch样本数。</p>
+</blockquote>
+<blockquote>
+<p>validation_steps: 仅当steps_per_epoch被指定时有用，在验证集上的step总数。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow.keras.callbacks <span class="keyword">import</span> TensorBoard, ModelCheckpoint, EarlyStopping, ReduceLROnPlateau</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras.optimizers <span class="keyword">import</span> Adam</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4.Define Model,train,predict and evaluate</span></span><br><span class="line"></span><br><span class="line">model = DeepFM(linear_feature_columns, dnn_feature_columns, task=<span class="string">'binary'</span>)</span><br><span class="line"></span><br><span class="line">opt = Adam(lr=<span class="number">0.0001</span>, beta_1=<span class="number">0.9</span>, beta_2=<span class="number">0.999</span>, epsilon=<span class="literal">None</span>, decay=<span class="number">0.0</span>, amsgrad=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">model.compile(opt, <span class="string">"binary_crossentropy"</span>, metrics=[<span class="string">'binary_crossentropy'</span>, <span class="string">'accuracy'</span>], )</span><br><span class="line"></span><br><span class="line">tbCallBack = TensorBoard(</span><br><span class="line">              log_dir=output_path, </span><br><span class="line">              histogram_freq=<span class="number">10</span>, </span><br><span class="line">              write_graph=<span class="literal">True</span>, </span><br><span class="line">              write_images=<span class="literal">False</span>, </span><br><span class="line">              update_freq=<span class="string">"epoch"</span>)</span><br><span class="line">ckCallBack = ModelCheckpoint(</span><br><span class="line">                filepath=target_path,</span><br><span class="line">                monitor=<span class="string">"val_loss"</span>,</span><br><span class="line">                save_best_only=<span class="literal">True</span>,</span><br><span class="line">                save_weights_only=<span class="literal">True</span>,</span><br><span class="line">                verbose=<span class="number">1</span>)</span><br><span class="line">esCallBack = EarlyStopping(</span><br><span class="line">                monitor=<span class="string">"val_loss"</span>,</span><br><span class="line">                min_delta=<span class="number">1e-8</span>,</span><br><span class="line">                patience=<span class="number">5</span>,</span><br><span class="line">                restore_best_weights=<span class="literal">True</span>,</span><br><span class="line">                verbose=<span class="number">1</span>)</span><br><span class="line">rrCallBack = ReduceLROnPlateau(</span><br><span class="line">                monitor=<span class="string">"val_loss"</span>,</span><br><span class="line">                min_delta=<span class="number">1e-8</span>,</span><br><span class="line">                factor=<span class="number">0.2</span>,</span><br><span class="line">                patience=<span class="number">3</span>,</span><br><span class="line">                verbose=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">history = model.fit(train_model_input, train[target].values,</span><br><span class="line">                        batch_size=<span class="number">512</span>, epochs=<span class="number">50</span>, verbose=<span class="number">1</span>, validation_split=<span class="number">0.2</span>, callbacks=[tbCallBack, ckCallBack, esCallBack, rrCallBack], )</span><br><span class="line">pred_ans = model.predict(test_model_input, batch_size=<span class="number">512</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"test LogLoss"</span>, round(log_loss(test[target].values, pred_ans), <span class="number">4</span>))</span><br><span class="line">print(<span class="string">"test AUC"</span>, round(roc_auc_score(test[target].values, pred_ans), <span class="number">4</span>))</span><br></pre></td></tr></table></figure>
+
+<p>输出<br><img src="1-4.png" alt="1-4"></p>
+<p>第一个epoch即可达到最佳效果，继续训练出现过拟合，<strong>正常现象</strong></p>
+
+      
+      <!-- 打赏 -->
+      
+        <div id="reward-btn">
+          打赏
+        </div>
+        
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://lacusrinz.github.com/2020/02/09/ctr/" data-id="ck6f2xo6t0000dec64c7zb4xf"
+        class="article-share-link">分享</a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+    
+      <a href="/2020/02/06/handwritting/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">英文手写体文字识别入门</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        Lacus Rinz
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>PV:<span id="busuanzi_value_page_pv"></span></li>
+  <li>UV:<span id="busuanzi_value_site_uv"></span></li>
+</ul>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/logo.png" alt="Rinz&#39;s Blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目录</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+  
+<script src="/js/tocbot.min.js"></script>
+
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+    });
+  </script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: false
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+  </div>
+</body>
+
+</html>
