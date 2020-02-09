@@ -7,11 +7,11 @@ tags:
 ## 目标
 实现对单行英文手写体的识别
 识别字符集：
+<!--more-->
 ```
 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ 
 ```
 
-<!--more-->
 
 ## 引用
 源项目：[点击这里](https://github.com/arthurflor23/handwritten-text-recognition)
