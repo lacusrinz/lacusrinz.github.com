@@ -6792,6 +6792,7 @@ a.toc-link {
   -moz-border-radius: 0.4rem;
   border-radius: 0.4rem;
   overflow: auto;
+  font-size: 14px;
   color: #dedede;
 }
 .article-entry .highlight .gutter pre,
@@ -7357,7 +7358,7 @@ pre .javascript .function {
     opacity: 1;
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 1080px) {
   html {
     font-size: 60%;
   }
