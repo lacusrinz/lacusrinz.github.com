@@ -1,92 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>
-    使用deepCTR库实践 |  Rinz&#39;s Blog
-  </title>
-  
-  <link rel="shortcut icon" href="/logo.png" />
-  
-  
-<link rel="stylesheet" href="/css/style.css">
-
-  
-<script src="/js/pace.min.js"></script>
-
-
-  
-
-  
-
-<meta name="generator" content="Hexo 4.2.0"></head>
-
-</html>
-
-<body>
-  <div id="app">
-    <main class="content">
-      <section class="outer">
-  <article id="post-ctr" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  使用deepCTR库实践
-</h1>
-  
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2020/02/09/ctr/" class="article-date">
-  <time datetime="2020-02-09T12:53:58.000Z" itemprop="datePublished">2020-02-09</time>
-</a>
-      
-    </div>
-    
-
-    
-    
-    <div class="tocbot"></div>
-
-
-
-
-
-    
-
-    <div class="article-entry" itemprop="articleBody">
-      
-
-
-      
-
-      
-      <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>使用deepCTR库快速完成一个deepFM模型训练</p>
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="使用deepCTR库实践"><meta name="keywords" content="tensorflow,CTR,deepFM"><meta name="author" content="Lacus Rinz"><meta name="copyright" content="Lacus Rinz"><title>使用deepCTR库实践 | Rinz's Blog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 4.2.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目标"><span class="toc-number">1.</span> <span class="toc-text">目标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开发环境"><span class="toc-number">2.</span> <span class="toc-text">开发环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据集"><span class="toc-number">3.</span> <span class="toc-text">数据集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#准备原始数据"><span class="toc-number">3.1.</span> <span class="toc-text">准备原始数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置环境"><span class="toc-number">4.</span> <span class="toc-text">配置环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据预处理"><span class="toc-number">4.1.</span> <span class="toc-text">数据预处理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#训练"><span class="toc-number">5.</span> <span class="toc-text">训练</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/images/avatar.JPG"></div><div class="author-info__name text-center">Lacus Rinz</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">7</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">10</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Rinz's Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">使用deepCTR库实践</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-09</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>使用deepCTR库快速完成一个deepFM模型训练</p>
 <a id="more"></a>
 
 <p><a href="https://github.com/shenweichen/DeepCTR" target="_blank" rel="noopener">DeepCTR</a></p>
 <h2 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h2><p>Google Driver + Google Colaboratory<br>在Driver中创建<code>ctr.ipynb</code>用Colaboratory打开</p>
 <h2 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h2><p>数据集我们使用Kaggle上比赛 <a href="https://www.kaggle.com/c/criteo-display-ad-challenge" target="_blank" rel="noopener">Criteo Display Advertising Challenge Predict click-through rates on display ads</a> 的数据集<br>Kaggle网站上的数据下载地址已失效，下载地址<a href="https://s3-eu-west-1.amazonaws.com/kaggle-display-advertising-challenge-dataset/dac.tar.gz" target="_blank" rel="noopener">点此</a></p>
 <h3 id="准备原始数据"><a href="#准备原始数据" class="headerlink" title="准备原始数据"></a>准备原始数据</h3><p>连入Google Driver</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from google.colab import drive</span><br><span class="line"></span><br><span class="line">drive.mount(&quot;.&#x2F;gdrive&quot;, force_remount&#x3D;True)</span><br><span class="line"></span><br><span class="line">%cd &quot;.&#x2F;gdrive&#x2F;My Drive&#x2F;deepCTR&#x2F;&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> google.colab <span class="keyword">import</span> drive</span><br><span class="line"></span><br><span class="line">drive.mount(<span class="string">"./gdrive"</span>, force_remount=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">%cd <span class="string">"./gdrive/My Drive/deepCTR/"</span></span><br></pre></td></tr></table></figure>
 
 <p>下载criteo数据集</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%cd raw</span><br><span class="line">!wget --no-check-certificate https:&#x2F;&#x2F;s3-eu-west-1.amazonaws.com&#x2F;kaggle-display-advertising-challenge-dataset&#x2F;dac.tar.gz</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%cd raw</span><br><span class="line">!wget --no-check-certificate https://s3-eu-west<span class="number">-1.</span>amazonaws.com/kaggle-display-advertising-challenge-dataset/dac.tar.gz</span><br></pre></td></tr></table></figure>
 <p>在Google Driver中解压<br>train.txt 11G<br>test.txt 1.4G<br>源文件太大，我们取前100w行做训练</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!head -n 1000000 train.txt &gt; train_sub100w.txt</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!head -n <span class="number">1000000</span> train.txt &gt; train_sub100w.txt</span><br></pre></td></tr></table></figure>
 
 <h2 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h2><p>因为Colaboratory环境有有GPU，所有我们安装DeepCTR的GPU版本</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install deepctr[gpu]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install deepctr[gpu]</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> log_loss, roc_auc_score</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> LabelEncoder, MinMaxScaler</span><br><span class="line"></span><br><span class="line">%tensorflow_version <span class="number">2.</span>x</span><br></pre></td></tr></table></figure>
 
@@ -105,7 +41,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">train, test = train_test_split(data, test_size=<span class="number">0.2</span>)</span><br><span class="line">train_model_input = &#123;name:train[name] <span class="keyword">for</span> name <span class="keyword">in</span> feature_names&#125;</span><br><span class="line">test_model_input = &#123;name:test[name] <span class="keyword">for</span> name <span class="keyword">in</span> feature_names&#125;</span><br><span class="line"><span class="keyword">for</span> name <span class="keyword">in</span> feature_names:</span><br><span class="line">  print(name)</span><br><span class="line">  s = []</span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">    s.append(train_model_input[name].tolist()[i])</span><br><span class="line">  print(s)</span><br></pre></td></tr></table></figure>
 <p>输出每个column包含的前9个值（节选）<br><img src="1-3.png" alt="1-3"></p>
 <h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>设置输出地址</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">output_path &#x3D; &quot;.&#x2F;output&quot;</span><br><span class="line">target_path &#x3D; &quot;.&#x2F;output&#x2F;checkpoint_weights.hdf5&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">output_path = <span class="string">"./output"</span></span><br><span class="line">target_path = <span class="string">"./output/checkpoint_weights.hdf5"</span></span><br></pre></td></tr></table></figure>
 <p><strong>Keras fit方法的定义</strong></p>
 <blockquote>
 <p>fit(self, x=None, y=None, batch_size=None, epochs=1, verbose=1, callbacks=None, validation_split=0.0, validation_data=None, shuffle=True, class_weight=None, sample_weight=None, initial_epoch=0, steps_per_epoch=None, validation_steps=None)</p>
@@ -156,205 +92,8 @@
 
 <p>输出<br><img src="1-4.png" alt="1-4"></p>
 <p>第一个epoch即可达到最佳效果，继续训练出现过拟合，<strong>正常现象</strong></p>
-
-      
-      <!-- 打赏 -->
-      
-        <div id="reward-btn">
-          打赏
-        </div>
-        
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://lacusrinz.github.com/2020/02/09/ctr/" data-id="ck6f2xo6t0000dec64c7zb4xf"
-        class="article-share-link">分享</a>
-      
-    </footer>
-
-  </div>
-
-  
-  
-  <nav class="article-nav">
-    
-      <a href="/2020/03/12/text-5/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            持续集成与持续部署(基础设施搭建）
-          
-        </div>
-      </a>
-    
-    
-      <a href="/2020/02/06/handwritting/" class="article-nav-link">
-        <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">英文手写体文字识别入门</div>
-      </a>
-    
-  </nav>
-
-
-  
-
-  
-
-  
-  
-  
-
-</article>
-</section>
-      <footer class="footer">
-  <div class="outer">
-    <ul class="list-inline">
-      <li>
-        &copy;
-        2020
-        Lacus Rinz
-      </li>
-      <li>
-        
-          Powered by
-        
-        
-        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
-        
-      </li>
-    </ul>
-    <ul class="list-inline">
-      <li>
-        
-        
-        <ul class="list-inline">
-  <li>PV:<span id="busuanzi_value_page_pv"></span></li>
-  <li>UV:<span id="busuanzi_value_site_uv"></span></li>
-</ul>
-        
-      </li>
-      <li>
-        <!-- cnzz统计 -->
-        
-      </li>
-    </ul>
-  </div>
-</footer>
-    <div class="to_top">
-        <div class="totop" id="totop">
-  <i class="ri-arrow-up-line"></i>
-</div>
-      </div>
-    </main>
-    
-    <aside class="sidebar">
-      
-        <button class="navbar-toggle"></button>
-<nav class="navbar">
-  
-  <div class="logo">
-    <a href="/"><img src="/images/logo.png" alt="Rinz&#39;s Blog"></a>
-  </div>
-  
-  <ul class="nav nav-main">
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/">主页</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/archives">目录</a>
-    </li>
-    
-  </ul>
-</nav>
-<nav class="navbar navbar-bottom">
-  <ul class="nav">
-    <li class="nav-item">
-      
-      
-    </li>
-  </ul>
-</nav>
-<div class="search-form-wrap">
-  <div class="local-search local-search-plugin">
-  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
-  <div id="local-search-result" class="local-search-result"></div>
-</div>
-</div>
-      </aside>
-      <div id="mask"></div>
-
-<!-- #reward -->
-<div id="reward">
-  <span class="close"><i class="ri-close-line"></i></span>
-  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
-  <div class="reward-box">
-    
-    <div class="reward-item">
-      <img class="reward-img" src="/images/alipay.jpg">
-      <span class="reward-type">支付宝</span>
-    </div>
-    
-    
-    <div class="reward-item">
-      <img class="reward-img" src="/images/wechat.jpg">
-      <span class="reward-type">微信</span>
-    </div>
-    
-  </div>
-</div>
-      
-<script src="/js/jquery-2.0.3.min.js"></script>
-
-
-<script src="/js/jquery.justifiedGallery.min.js"></script>
-
-
-<script src="/js/lazyload.min.js"></script>
-
-
-<script src="/js/busuanzi-2.3.pure.min.js"></script>
-
-
-
-
-  
-<script src="/js/tocbot.min.js"></script>
-
-  <script>
-    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
-    tocbot.init({
-      tocSelector: '.tocbot',
-      contentSelector: '.article-entry',
-      headingSelector: 'h1, h2, h3, h4, h5, h6',
-      hasInnerContainers: true,
-      scrollSmooth: true,
-      positionFixedSelector: '.tocbot',
-      positionFixedClass: 'is-position-fixed',
-      fixedSidebarOffset: 'auto',
-    });
-  </script>
-
-
-<script>
-  var ayerConfig = {
-    mathjax: false
-  }
-</script>
-
-
-<script src="/js/ayer.js"></script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
-
-
-
-<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
-  
-  
-  </div>
-</body>
-
-</html>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Lacus Rinz</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://lacusrinz.github.com/2020/02/09/ctr/">http://lacusrinz.github.com/2020/02/09/ctr/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://lacusrinz.github.com">Rinz's Blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/tensorflow/">tensorflow</a><a class="post-meta__tags" href="/tags/CTR/">CTR</a><a class="post-meta__tags" href="/tags/deepFM/">deepFM</a></div><div class="post-qr-code"><div class="post-qr-code-item"><img class="post-qr-code__img" src="/images/alipay.jpg"><div class="post-qr-code__desc">支付宝打赏</div></div><div class="post-qr-code-item"><img class="post-qr-code__img" src="/images/wechat.jpg"><div class="post-qr-code__desc">微信打赏</div></div></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/03/12/text-5/"><i class="fa fa-chevron-left">  </i><span>持续集成与持续部署(基础设施搭建）</span></a></div><div class="next-post pull-right"><a href="/2020/02/06/handwritting/"><span>英文手写体文字识别入门</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By Lacus Rinz</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody" target="_blank" rel="noopener"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script></body></html>
