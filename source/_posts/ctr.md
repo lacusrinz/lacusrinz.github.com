@@ -1,7 +1,8 @@
 ---
 title: 使用deepCTR库实践
 date: 2020-02-09 20:53:58
-tags:
+tags: [CTR, tensorflow, deepFM]
+categories: 机器学习应用
 ---
 
 ## 目标
@@ -20,7 +21,7 @@ Kaggle网站上的数据下载地址已失效，下载地址[点此](https://s3-
 
 ### 准备原始数据
 连入Google Driver
-```
+```python
 from google.colab import drive
 
 drive.mount("./gdrive", force_remount=True)
@@ -29,7 +30,7 @@ drive.mount("./gdrive", force_remount=True)
 ```
 
 下载criteo数据集
-```
+```python
 %cd raw
 !wget --no-check-certificate https://s3-eu-west-1.amazonaws.com/kaggle-display-advertising-challenge-dataset/dac.tar.gz
 ```
@@ -37,13 +38,13 @@ drive.mount("./gdrive", force_remount=True)
 train.txt 11G
 test.txt 1.4G
 源文件太大，我们取前100w行做训练
-```
+```python
 !head -n 1000000 train.txt > train_sub100w.txt
 ```
 
 ## 配置环境
 因为Colaboratory环境有有GPU，所有我们安装DeepCTR的GPU版本
-```
+```python
 pip install deepctr[gpu]
 ```
 
@@ -137,7 +138,7 @@ for name in feature_names:
 
 ## 训练
 设置输出地址
-```
+```python
 output_path = "./output"
 target_path = "./output/checkpoint_weights.hdf5"
 ```

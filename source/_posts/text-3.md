@@ -1,7 +1,8 @@
 ---
-title: 使用TensorFlow Object Detection API(3)
+title: 使用TensorFlow 实现物体识别 -- 多GPU运行
 date: 2020-01-17 21:40:59
-tags:
+tags: [tensorflow]
+categories: 机器学习应用
 ---
 
 ## 目标

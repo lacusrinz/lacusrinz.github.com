@@ -1,7 +1,8 @@
 ---
-title: 使用TensorFlow Object Detection API(2)
+title: 使用TensorFlow 实现物体识别 -- 核心代码解析
 date: 2020-01-04 16:20:39
-tags:
+tags: [tensorflow,人工智能]
+categories: 机器学习应用
 ---
 
 ## 目标
@@ -19,7 +20,7 @@ tags:
 通过model_lib.py文件中的`create_estimator_and_inputs` `create_train_and_eval_specs`两个方法构造estimator，input_fn，train_spec，eval_specs等内容
 ![create_estimator_and_inputs](create_estimator_and_inputs.png) 
 `create_estimator_and_inputs`中的model_fn
-```
+```python
 model_fn = model_fn_creator(detection_model_fn, configs, hparams, use_tpu,
                               postprocess_on_cpu)
 ```
@@ -40,13 +41,13 @@ tf.estimator.train_and_evaluate(
 
 该函数的参数有三个：
 
-    estimator：一个 Estimator 实例。
+   >estimator：一个 Estimator 实例。
     train_spec：一个 TrainSpec 实例。用来配置训练过程。
     eval_spec：一个 EvalSpec 实例。用来配置评估过程、（可选）模型的导出。
 
 该函数的返回值有一个：
 
-    Estimator.evaluate 的结果及前面指定的 ExportStrategy 的输出结果。
+   >Estimator.evaluate 的结果及前面指定的 ExportStrategy 的输出结果。
 
 
 `train_and_evaluate`编写的程序同时支持本地、集群上的训练，而不需要修改任何代码。所以`model_main.py`可以在本地执行也可以在TPU上执行

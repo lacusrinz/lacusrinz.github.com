@@ -1,13 +1,14 @@
 ---
 title: 英文手写体文字识别入门
 date: 2020-02-06 22:24:53
-tags:
+tags: [手写体, 文字识别, tensorflow, 人工智能]
+categories: 机器学习应用
 ---
 
 ## 目标
 实现对单行英文手写体的识别
-识别字符集：
 <!--more-->
+识别字符集：
 ```
 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ 
 ```

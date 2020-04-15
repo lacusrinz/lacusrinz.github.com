@@ -1,17 +1,17 @@
 ---
-title: 使用TensorFlow Object Detection API(1)
+title: 使用TensorFlow 实现物体识别 -- 猫狗识别
 date: 2020-01-02 23:59:44
-tags:
+tags: [tensorflow, 物体识别,人工智能]
+categories: 机器学习应用
 ---
 
 ### 目标
 使用猫狗数据集在本地电脑做迁移学习，获得能在手机上使用的SSD MobileNet模型
+<!--more-->
 [Github地址](https://github.com/tensorflow/models/tree/master/research/object_detection)
 这里需要下载research下面`object_detection`,`slim`两个项目，并保持在research下的目录结构
 [参考教程Training and serving a realtime mobile object detector in 30 minutes with Cloud TPUs](https://medium.com/tensorflow/training-and-serving-a-realtime-mobile-object-detector-in-30-minutes-with-cloud-tpus-b78971cf1193)
 本文在教程的基础上做出一定的修改使其可以在本地运行，教程中的详细说明不再重复，仅列出需要注意的内容。
-
-<!--more-->
 
 ### 环境
 Ubuntu 18.04.2 下使用docker镜像：
@@ -25,7 +25,7 @@ nvidia/cuda             10.1-devel
 pet_label_map.pbtxt 文件是37个宠物分类（label文件）
 
 2. 使用SSD MobileNet checkpoint文件作迁移学习
-[checkpoint文件下载地址](http://download.tensorflow.org/models/object_detection)
+[checkpoint文件下载地址-ssd_mobilenet_v1_0.75_depth_coco ☆](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md)
 解压ssd_mobilenet_v1_0.75_depth_300x300_coco14_sync_2018_07_03.tar.gz
 使用model.ckpt.* 3个文件
 
@@ -33,7 +33,7 @@ pet_label_map.pbtxt 文件是37个宠物分类（label文件）
 config文件使用`ssd_mobilenet_v1_pets.config`
 本文使用单块1070ti进行训练，batchsize最大只能设置16
 在config文件末尾增加量化设置
-```
+```xml
 graph_rewriter {
   quantization {
     delay: 1800

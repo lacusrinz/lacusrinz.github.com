@@ -1,7 +1,8 @@
 ---
-title: 使用TensorFlow Object Detection API(4)
+title: 使用TensorFlow 实现物体识别 -- 自定义数据集训练
 date: 2020-02-02 12:34:05
-tags:
+tags: [tensorflow, 物体识别,人工智能]
+categories: 机器学习应用
 ---
 
 ## 目标
@@ -34,7 +35,7 @@ cap卡牌38张
 ### 制作tfrecord
 制作`label_map.bptxt`文件，标明class
 
-```python
+```xml
 item {
   id: 1
   name: 'Aa'
@@ -68,7 +69,7 @@ item {
 
 制作`trainval.txt`，写入所有图片文件名，放在`annotations`文件夹中
 
-```
+```xml
 apple_25
 Bb_10
 Bb_11
@@ -356,7 +357,7 @@ if __name__ == '__main__':
 ### 配置
 在[zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md)中下载SSDLite with MobileNet-V3-Small backbone模型预训练文件和管道文件，操作方式和文1一样
 修改管道文件`ssdlite_mobilenet_v3_small_320x320.config`
-```
+```xml
 # SSDLite with Mobilenet v3 small feature extractor.
 # Trained on COCO14, initialized from scratch.
 # TPU-compatible.
@@ -574,7 +575,7 @@ eval_input_reader: {
 ## 转tflite
 graph文件转bp与文1一致
 由于本模型不是quantized的，所有bp转tflite时需要增加一个参数
-```
+```code
 allow_custom_ops: Boolean indicating whether to allow custom operations. When false any unknown operation is an error. When true, custom ops are created for any op that is unknown. The developer will need to provide these to the TensorFlow Lite runtime with a custom resolver. (default False)
 ```
 可以使用代码实现
