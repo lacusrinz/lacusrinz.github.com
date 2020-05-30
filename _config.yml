@@ -101,3 +101,12 @@ deploy:
   type: git
   repository: https://github.com/lacusrinz/lacusrinz.github.com
   branch: master
+
+markdown_it_plus:
+  plugins:
+    - plugin:
+      name: "@neilsustc/markdown-it-katex"
+      enable: true
+      options:
+        strict: false
+
