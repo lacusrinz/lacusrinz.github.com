@@ -7,10 +7,11 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script><meta name="generator" content="Hexo 4.2.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#APP动态配置"><span class="toc-number">1.</span> <span class="toc-text">APP动态配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#不要写死"><span class="toc-number">1.1.</span> <span class="toc-text">不要写死</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#AB测试"><span class="toc-number">2.</span> <span class="toc-text">AB测试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是AB测试"><span class="toc-number">2.1.</span> <span class="toc-text">什么是AB测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AB-测试的价值"><span class="toc-number">2.2.</span> <span class="toc-text">AB 测试的价值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么时候需要-AB-测试"><span class="toc-number">2.3.</span> <span class="toc-text">什么时候需要 AB 测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些要注意的坑"><span class="toc-number">2.4.</span> <span class="toc-text">一些要注意的坑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AB测试模块"><span class="toc-number">2.5.</span> <span class="toc-text">AB测试模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#流程实践"><span class="toc-number">2.6.</span> <span class="toc-text">流程实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#如何分桶"><span class="toc-number">2.6.1.</span> <span class="toc-text">如何分桶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#可重叠分层分桶方法"><span class="toc-number">2.6.2.</span> <span class="toc-text">可重叠分层分桶方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#流量分配"><span class="toc-number">2.6.3.</span> <span class="toc-text">流量分配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验效果评估"><span class="toc-number">2.6.4.</span> <span class="toc-text">实验效果评估</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#高级实验"><span class="toc-number">2.6.5.</span> <span class="toc-text">高级实验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#业界流行的-AB-测试架构实现方案"><span class="toc-number">2.7.</span> <span class="toc-text">业界流行的 AB 测试架构实现方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过定制的-AB-Test-SDK-来处理-AB-测试业务"><span class="toc-number">2.7.1.</span> <span class="toc-text">通过定制的 AB Test SDK 来处理 AB 测试业务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在后端业务层增加相关组件来做-AB-测试"><span class="toc-number">2.7.2.</span> <span class="toc-text">在后端业务层增加相关组件来做 AB 测试</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#推荐系统如何测试与评估"><span class="toc-number">3.</span> <span class="toc-text">推荐系统如何测试与评估</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐算法接入-AB-测试框架的架构"><span class="toc-number">3.1.</span> <span class="toc-text">推荐算法接入 AB 测试框架的架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐算法接入-AB-测试框架的业务流"><span class="toc-number">3.2.</span> <span class="toc-text">推荐算法接入 AB 测试框架的业务流</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/images/avatar.JPG"></div><div class="author-info__name text-center">Lacus Rinz</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">12</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">13</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">2</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Rinz's Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">APP动态配置，AB测试，推荐系统效果评估</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-04</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E4%BA%A7%E5%93%81%E5%85%BB%E6%88%90/">产品养成</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p><strong>不要写死，不要写死，不要写死!!!</strong></p>
-<a id="more"></a>
-<hr>
-<h1 id="APP动态配置"><a href="#APP动态配置" class="headerlink" title="APP动态配置"></a>APP动态配置</h1><h2 id="不要写死"><a href="#不要写死" class="headerlink" title="不要写死"></a>不要写死</h2><p>不要写死，一个永恒的话题。动态化，也是一个涵盖了界面，功能，数据，配置诸多方面的一个宽泛话题。</p>
+} </script><meta name="generator" content="Hexo 4.2.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#-more-"><span class="toc-number">1.</span> <span class="toc-text"> </span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#app动态配置"><span class="toc-number"></span> <span class="toc-text"> APP动态配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#不要写死"><span class="toc-number">1.</span> <span class="toc-text"> 不要写死</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ab测试"><span class="toc-number"></span> <span class="toc-text"> AB测试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是ab测试"><span class="toc-number">1.</span> <span class="toc-text"> 什么是AB测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ab-测试的价值"><span class="toc-number">2.</span> <span class="toc-text"> AB 测试的价值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么时候需要-ab-测试"><span class="toc-number">3.</span> <span class="toc-text"> 什么时候需要 AB 测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些要注意的坑"><span class="toc-number">4.</span> <span class="toc-text"> 一些要注意的坑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ab测试模块"><span class="toc-number">5.</span> <span class="toc-text"> AB测试模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#流程实践"><span class="toc-number">6.</span> <span class="toc-text"> 流程实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#如何分桶"><span class="toc-number">6.1.</span> <span class="toc-text"> 如何分桶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#可重叠分层分桶方法"><span class="toc-number">6.2.</span> <span class="toc-text"> 可重叠分层分桶方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#流量分配"><span class="toc-number">6.3.</span> <span class="toc-text"> 流量分配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验效果评估"><span class="toc-number">6.4.</span> <span class="toc-text"> 实验效果评估</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#高级实验"><span class="toc-number">6.5.</span> <span class="toc-text"> 高级实验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#业界流行的-ab-测试架构实现方案"><span class="toc-number">7.</span> <span class="toc-text"> 业界流行的 AB 测试架构实现方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过定制的-ab-test-sdk-来处理-ab-测试业务"><span class="toc-number">7.1.</span> <span class="toc-text"> 通过定制的 AB Test SDK 来处理 AB 测试业务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在后端业务层增加相关组件来做-ab-测试"><span class="toc-number">7.2.</span> <span class="toc-text"> 在后端业务层增加相关组件来做 AB 测试</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#推荐系统如何测试与评估"><span class="toc-number"></span> <span class="toc-text"> 推荐系统如何测试与评估</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐算法接入-ab-测试框架的架构"><span class="toc-number">1.</span> <span class="toc-text"> 推荐算法接入 AB 测试框架的架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐算法接入-ab-测试框架的业务流"><span class="toc-number">2.</span> <span class="toc-text"> 推荐算法接入 AB 测试框架的业务流</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/images/avatar.JPG"></div><div class="author-info__name text-center">Lacus Rinz</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">13</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">13</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">2</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Rinz's Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"></span></div><div id="post-info"><div id="post-title">APP动态配置，AB测试，推荐系统效果评估</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-04</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E4%BA%A7%E5%93%81%E5%85%BB%E6%88%90/">产品养成</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p><strong>不要写死，不要写死，不要写死!!!</strong></p>
+<h2 id="-more-"><a class="markdownIt-Anchor" href="#-more-"></a> <a id="more"></a></h2>
+<h1 id="app动态配置"><a class="markdownIt-Anchor" href="#app动态配置"></a> APP动态配置</h1>
+<h2 id="不要写死"><a class="markdownIt-Anchor" href="#不要写死"></a> 不要写死</h2>
+<p>不要写死，一个永恒的话题。动态化，也是一个涵盖了界面，功能，数据，配置诸多方面的一个宽泛话题。</p>
 <p>这里不细讲动态化的具体实践，各家都是各凭本事，参考</p>
 <p>知乎移动端动态化方案全览 <a href="https://www.infoq.cn/article/RRvP-Kli8AwEx6TuB1aG" target="_blank" rel="noopener">https://www.infoq.cn/article/RRvP-Kli8AwEx6TuB1aG</a></p>
 <p>支付宝移动端动态化方案实践  <a href="https://segmentfault.com/a/1190000017072158" target="_blank" rel="noopener">https://segmentfault.com/a/1190000017072158</a></p>
@@ -24,38 +25,44 @@
 </ul>
 <p>动态化体系缺不了灰度能力 ，灰度能力是动态化体系的基础设施，不可或缺。灰度系统的几大重要能力包括：</p>
 <ol>
-<li>选择灰度范围的能力 </li>
-<li>扩大灰度范围的能力 </li>
+<li>选择灰度范围的能力</li>
+<li>扩大灰度范围的能力</li>
 <li>回滚的能力。</li>
 </ol>
 <p>灰度范围简单的说就是一个白名单，如何决定白名单是需要根据业务调整的，这意味着灰度系统需要有足够的能力各种各样的白名单。灰度系统一般都不是单独存在的，可以将灰度系统拆成两部分，灰度能力和白名单系统。灰度能力需要嵌到各个系统中去，让各个系统根据自己的需要实现，而白名单系统一般是可以单独搭建的，让各个系统共用一个白名单系统有助于各个动态系统互相配合使用。</p>
 <p>AB系统相比于灰度系统最大的不同在于，AB系统关注的指标和灰度系统不一样。灰度系统考虑更多的是系统的稳定性，新版本会不会导致线上问题，而AB系统一般要关注的都是业务指标，比如A需求和B需求相比较，哪个引导用户购买的效果更好此类的。因此AB系统的关键指标和灰度系统有所不同。</p>
-<hr>
-<h1 id="AB测试"><a href="#AB测试" class="headerlink" title="AB测试"></a>AB测试</h1><h2 id="什么是AB测试"><a href="#什么是AB测试" class="headerlink" title="什么是AB测试"></a>什么是AB测试</h2><p>AB测试是对比两个或多个变体在同一地方好坏的方法，并且需要保证样本的同时和同质。</p>
+<hr />
+<h1 id="ab测试"><a class="markdownIt-Anchor" href="#ab测试"></a> AB测试</h1>
+<h2 id="什么是ab测试"><a class="markdownIt-Anchor" href="#什么是ab测试"></a> 什么是AB测试</h2>
+<p>AB测试是对比两个或多个变体在同一地方好坏的方法，并且需要保证样本的同时和同质。</p>
 <p>同时性：两个变体是同时投入使用的，而不是今天使用A变体，明天使用B变体，这样会有其他因素影响。比如，对于电商网站来说今天没有活动，而明天是双十一，在这个条件下我们不能判断变体B比变体A好。</p>
 <p>同质性：两个变体对应的使用群体需要保证尽量一致。比如，想想一个极端场景：变体A里全是女性，变体B中全是男性，我们根本无法判断出来究竟是方案影响了最终效果还是性别。</p>
-<p><img src="1-1.png" alt="图片"></p>
+<p><img src="1-1.png" alt="图片" /></p>
 <p><strong>理论支撑</strong>：中心极限定理，意思是独立同分布的随机变量的和服从正态分布。对于 AB 测试，我们比较的是两组样本的平均表现，AB 测试保证 AB 两组某个因素不一样 (这个就是我们要验证的优化点)，AB 两组其他很多未知影响因素一样 (这些因素是独立同分布的随机变量)，当 AB 两组样本足够多时，这些其他因素产生的效果是满足同一正态分布的，因此可以认为对要验证的变量的作用是相互抵消的，这样待验证因素 (即我们的控制变量) 的影响就可以比较了，因此我们就可以通过实验来验证优化是否有效。</p>
-<h2 id="AB-测试的价值"><a href="#AB-测试的价值" class="headerlink" title="AB 测试的价值"></a>AB 测试的价值</h2><ul>
+<h2 id="ab-测试的价值"><a class="markdownIt-Anchor" href="#ab-测试的价值"></a> AB 测试的价值</h2>
+<ul>
 <li>为评估产品优化效果提供科学的证据</li>
 <li>借助 AB 测试可以提升决策的说服力</li>
 <li>AB 测试可以帮助提升用户体验和用户增长</li>
 <li>AB 测试可以帮助提升公司变现能力</li>
 </ul>
-<h2 id="什么时候需要-AB-测试"><a href="#什么时候需要-AB-测试" class="headerlink" title="什么时候需要 AB 测试"></a>什么时候需要 AB 测试</h2><ul>
+<h2 id="什么时候需要-ab-测试"><a class="markdownIt-Anchor" href="#什么时候需要-ab-测试"></a> 什么时候需要 AB 测试</h2>
+<ul>
 <li>必须是有大量用户的产品或者功能点</li>
 <li>进行 AB 测试的代价 (金钱 &amp; 时间) 可以接受</li>
 <li>有服务质量提升诉求</li>
 <li>变量可以做比较好的精细控制</li>
 </ul>
-<h2 id="一些要注意的坑"><a href="#一些要注意的坑" class="headerlink" title="一些要注意的坑"></a>一些要注意的坑</h2><ul>
+<h2 id="一些要注意的坑"><a class="markdownIt-Anchor" href="#一些要注意的坑"></a> 一些要注意的坑</h2>
+<ul>
 <li>AB 测试一定要具备统计学意义上“显著”的置信度</li>
 <li>用户体验一致性</li>
 <li>测试周期要足够长</li>
 <li>损失最小性原则</li>
 <li>处理好 AB 测试与缓存的关系</li>
 </ul>
-<h2 id="AB测试模块"><a href="#AB测试模块" class="headerlink" title="AB测试模块"></a>AB测试模块</h2><p><img src="1-2.png" alt="图片"></p>
+<h2 id="ab测试模块"><a class="markdownIt-Anchor" href="#ab测试模块"></a> AB测试模块</h2>
+<p><img src="1-2.png" alt="图片" /></p>
 <p><strong>分组模块</strong></p>
 <p>分组模块的目的是根据各种业务规则，将流量 (用户) 分为 AB 两组 (或者多组)。可以说分组模块是 AB 测试最核心的模块，好的 AB 分组方案可以让流量分配的更均匀随机。同时需要具备根据用户、地域、时间、版本、系统、渠道、事件等各种维度来对请求进行分组的能力，并且保证分组的均匀性和一致性。</p>
 <p><strong>试验管理模块</strong></p>
@@ -66,51 +73,63 @@
 <p>行为记录分析模块主要的目的是当某个产品功能的 AB 测试在线上运行时，记录用户的在 AB 测试模块的行为，将用户的行为收集到数据中心，借助大数据分析平台来做各种效果评估指标的统计分析与评估，最终确定新的优化点是否是有效的。</p>
 <p><strong>效果评估模块</strong></p>
 <p>AB 测试效果评估组件是用于跟踪 AB 测试的效果，根据 AB 测试效果来做出业务、运营、算法调整的决策。</p>
-<h2 id="流程实践"><a href="#流程实践" class="headerlink" title="流程实践"></a>流程实践</h2><h3 id="如何分桶"><a href="#如何分桶" class="headerlink" title="如何分桶"></a>如何分桶</h3><p>如何进行分组（分桶）：假设现在有12个人（Customer）；有6个桶（Bucket），每个用户在访问实验时，会先进入到分流算法中，由算法来决定分到哪个桶里面，都分完后最理想的是每个桶里正好有2个人。（实际上基于大数定律原理，数据量越大分配的会越平均）</p>
-<p><img src="1-3.png" alt="图片"></p>
+<h2 id="流程实践"><a class="markdownIt-Anchor" href="#流程实践"></a> 流程实践</h2>
+<h3 id="如何分桶"><a class="markdownIt-Anchor" href="#如何分桶"></a> 如何分桶</h3>
+<p>如何进行分组（分桶）：假设现在有12个人（Customer）；有6个桶（Bucket），每个用户在访问实验时，会先进入到分流算法中，由算法来决定分到哪个桶里面，都分完后最理想的是每个桶里正好有2个人。（实际上基于大数定律原理，数据量越大分配的会越平均）</p>
+<p><img src="1-3.png" alt="图片" /></p>
 <p>假设每个变体的流量是50%，变体A我们假定对应的是三个桶1、2、3桶，变体B也是对应的是4、5、6桶。变体A选中的概率是50%，所以只要对应任意三个桶即可。</p>
-<h3 id="可重叠分层分桶方法"><a href="#可重叠分层分桶方法" class="headerlink" title="可重叠分层分桶方法"></a><strong>可重叠分层分桶方法</strong></h3><p>如果用户只被分流了一次（分入6个桶中），只做一次孤立的实验是没有问题的，但考虑到长期交叉、连续的实验，这样做有很大的问题。</p>
+<h3 id="可重叠分层分桶方法"><a class="markdownIt-Anchor" href="#可重叠分层分桶方法"></a> <strong>可重叠分层分桶方法</strong></h3>
+<p>如果用户只被分流了一次（分入6个桶中），只做一次孤立的实验是没有问题的，但考虑到长期交叉、连续的实验，这样做有很大的问题。</p>
 <ol>
-<li>这种设计只能进行单层实验，也就是说一份流量只能通过一个实验。<blockquote>
+<li>这种设计只能进行单层实验，也就是说一份流量只能通过一个实验。</li>
+</ol>
+<blockquote>
 <p>如果实验人员选择了在任意一个桶中同时进行 X, Y 两个实验的话，那两个实验的结果就会相互干涉，导致最终结果不可信。例如：在尾号为 001 的桶里进行了两个促销活动“降价10%”和“满100减10块”的实验，最终 001 桶的用户订单数比其它桶高，那到底是哪个促销更有效果呢？</p>
 </blockquote>
-</li>
-<li>这种设计在长期会造成桶间用户行为有偏。<blockquote>
-<p>也许刚开始因为其随机性，桶间用户行为差异很小。但第一个实验过后，桶间就开始有了行为差异——这也是 ABTest 的目标。N 个实验过后，桶间行为的差异可能就变得非常大了。<br>比如你总是在 001 桶的用户上实验幅度较大的促销活动，那么 001 桶的用户留存就会显著高于其它桶。那实验人员为了让实验效果更好看，可能会偷偷地继续选择 001 桶进行实验。</p>
+<ol>
+<li>这种设计在长期会造成桶间用户行为有偏。</li>
+</ol>
+<blockquote>
+<p>也许刚开始因为其随机性，桶间用户行为差异很小。但第一个实验过后，桶间就开始有了行为差异——这也是 ABTest 的目标。N 个实验过后，桶间行为的差异可能就变得非常大了。<br />
+比如你总是在 001 桶的用户上实验幅度较大的促销活动，那么 001 桶的用户留存就会显著高于其它桶。那实验人员为了让实验效果更好看，可能会偷偷地继续选择 001 桶进行实验。</p>
 </blockquote>
-</li>
+<ol>
 <li>这种设计的实验效率太低。因为一份流量只能通过一个实验，无法对流量进行充分的利用。</li>
 </ol>
 <p>将流量分成可重叠的多个层。因为很多类实验从修改的系统参数到观察的产品指标都是不相关的，完全可以将实验分成互相独立的多个层。例如 UI 层、推荐算法层、广告算法层，或者开屏、首页、购物车、结算页等。</p>
 <p>单单分层还不够，在每个层中需要使用不同的随机分桶算法，保证流量在不同层中是正交的。也就是说，一个用户在每个层中应该分到哪个桶里，是独立不相关的。具体来说，在上一层 001 桶的所有用户，理论上应该均匀地随机分布在下一层的 1000 个桶中。</p>
 <p>通过可重叠的分层分桶方法，一份流量通过 N 个层可以同时中 N 个实验，而且实验之间相互不干扰，能显著提升流量利用率。</p>
-<h3 id="流量分配"><a href="#流量分配" class="headerlink" title="流量分配"></a><strong>流量分配</strong></h3><ul>
-<li>不影响用户体验：如 UI 实验、文案类实验等，一般可以均匀分配流量实验，可以快速得到实验结论 </li>
-<li>不确定性较强的实验：如产品新功能上线，一般需小流量实验，尽量减小用户体验影响，在允许的时间内得到结论 </li>
+<h3 id="流量分配"><a class="markdownIt-Anchor" href="#流量分配"></a> <strong>流量分配</strong></h3>
+<ul>
+<li>不影响用户体验：如 UI 实验、文案类实验等，一般可以均匀分配流量实验，可以快速得到实验结论</li>
+<li>不确定性较强的实验：如产品新功能上线，一般需小流量实验，尽量减小用户体验影响，在允许的时间内得到结论</li>
 <li>希望收益最大化的实验：如运营活动等，尽可能将效果最大化，一般需要大流量实验，留出小部分对照组用于评估 ROI</li>
 </ul>
-<p><img src="1-4.png" alt="图片"></p>
+<p><img src="1-4.png" alt="图片" /></p>
 <p>根据实验的预期结果，大盘用户量，确定实验所需最小流量，可以通过<a href="https://www.evanmiller.org/ab-testing/" target="_blank" rel="noopener">这个网站</a>专门计算所需样本量。</p>
 <p><strong>例1：</strong></p>
-<p>以次日留存率为例，目前大盘次日留存率 80%，预期实验能够提升 0.2pp<br>（这里的留存率可以转换为点击率、渗透率等等，只要是比例值就可以，<strong>如果估不准，为了保证实验能够得到结果，此处可低估，不可高估，也就是 0.2pp 是预期能够提升地最小值</strong>）</p>
-<p>网站计算，最少样本量就是 63W<br>（<strong>这里的最少样本量，指的是最少流量实验组的样本量</strong>）</p>
+<p>以次日留存率为例，目前大盘次日留存率 80%，预期实验能够提升 0.2pp<br />
+（这里的留存率可以转换为点击率、渗透率等等，只要是比例值就可以，<strong>如果估不准，为了保证实验能够得到结果，此处可低估，不可高估，也就是 0.2pp 是预期能够提升地最小值</strong>）</p>
+<p>网站计算，最少样本量就是 63W<br />
+（<strong>这里的最少样本量，指的是最少流量实验组的样本量</strong>）</p>
 <p>如果我们每天只有 5W 的用户可用于实验（5W 的用户，指最少流量实验组是 5W 用户），63/ 5 = 13 天，我们需要至少 13 天才能够得到实验结论</p>
-<p><img src="1-5.png" alt="图片"></p>
+<p><img src="1-5.png" alt="图片" /></p>
 <p><strong>例2：</strong></p>
 <p>如果我们预期提升的指标是人均时长、人均 VV 等，可能就比较复杂了，我们需要运用 t 检验反算，需要的样本量：</p>
-<p><img src="1-6.png" alt="图片"></p>
-<h3 id="实验效果评估"><a href="#实验效果评估" class="headerlink" title="实验效果评估"></a>实验效果评估</h3><p>从4个方面评估</p>
+<p><img src="1-6.png" alt="图片" /></p>
+<h3 id="实验效果评估"><a class="markdownIt-Anchor" href="#实验效果评估"></a> 实验效果评估</h3>
+<p>从4个方面评估</p>
 <ol>
-<li>方案 1 和方案 2，哪个效果更好？ </li>
-<li>哪个 ROI 更高？ </li>
-<li>长期来看哪个更好？ </li>
+<li>方案 1 和方案 2，哪个效果更好？</li>
+<li>哪个 ROI 更高？</li>
+<li>长期来看哪个更好？</li>
 <li>不同群体有差异吗？</li>
 </ol>
 <p><strong>1.效果比较：</strong></p>
 <p>对于留存率、渗透率等漏斗类指标，采用<strong>卡方检验</strong>：</p>
-<p><img src="1-7.png" alt="图片"></p>
+<p><img src="1-7.png" alt="图片" /></p>
 <p>对于人均时长类等均值类指标，采用<strong>t 检验</strong>：</p>
-<p><img src="1-8.png" alt="图片"></p>
+<p><img src="1-8.png" alt="图片" /></p>
 <p><strong>2.ROI</strong></p>
 <p>对于 ROI 的计算，成本方面，每个实验组成本可以直接计算，对于收益方面，就要和对照组相比较，假定以总日活跃天（即 DAU 按日累计求和）作为收益指标，需要假设不做运营活动，DAU 会是多少，可以通过对照组计算，即：</p>
 <ul>
@@ -120,11 +139,12 @@
 <p>这样就可以量化出每个方案的 ROI。</p>
 <p><strong>3.长期效果</strong></p>
 <p>这里就要考虑新奇效应的问题了，一般在实验上线前期，用户因为新鲜感，效果可能都不错，因此在做评估的时候，需要观测指标到稳定态后，再做评估。</p>
-<p><img src="1-9.png" alt="图片"></p>
+<p><img src="1-9.png" alt="图片" /></p>
 <p>例如有的时候出现，刚刚上线前期，实验组效果更好，但是经过一段时间，用户的新鲜感过去了，实验组的效果可能更差，因此，从长远收益来看，我们应该选择对照组，是实验组的新奇效应欺骗了我们，在做实验分析时，应剔除新奇效应的部分，待平稳后，再做评估</p>
 <p><strong>4.用户群体差异</strong></p>
 <p>很多情况下，对新用户可能实验组更好，老用户对照组更好；对年轻人实验组更好，中年人对照组更好，分析实验结论时，还要关注用户群体的差异。</p>
-<h3 id="高级实验"><a href="#高级实验" class="headerlink" title="高级实验"></a>高级实验</h3><p>对于长线业务，可能同时有数十个实验同时进行，不但对比每项小迭代的差异，同时对比专项对大盘的贡献量、部门整体对大盘的贡献量，这样就需要运用到了实验的层域管理模型。</p>
+<h3 id="高级实验"><a class="markdownIt-Anchor" href="#高级实验"></a> 高级实验</h3>
+<p>对于长线业务，可能同时有数十个实验同时进行，不但对比每项小迭代的差异，同时对比专项对大盘的贡献量、部门整体对大盘的贡献量，这样就需要运用到了实验的层域管理模型。</p>
 <ul>
 <li>对比每个产品细节迭代的结果</li>
 <li>对比每个专项在一个阶段的贡献</li>
@@ -143,7 +163,7 @@
 <li>还有的时候，活动 A 和活动 B，本质上是在做相同的事情，这个时候就会 1+1 &lt; 2</li>
 </ul>
 <p>这个时候，我们准确量化春节活动的贡献，就需要一个【贯穿】所有活动的对照组，在 AB 实验系统中通俗称作<strong>贯穿层</strong>。</p>
-<p><img src="1-10.png" alt="图片"></p>
+<p><img src="1-10.png" alt="图片" /></p>
 <p>（说明：实验中，各层的<strong>流量是正交的</strong>，简单理解，例如，A 层的分流采用用户 ID 的倒数第 1 位，B 层的分流采用用户 ID 的倒数第 2 位，在用户 ID 随机的情况下，倒数第 1 位和倒数第 2 位是没有关系的，也称作相互<strong>独立</strong>，我们称作<strong>正交</strong>。当然，AB Test 实验系统真实的分流逻辑，是采用了复杂的 hash 函数、正交表，能够保证正交性。）</p>
 <p>这样分层后，我们可以按照<strong>如下的方式量化贡献</strong>：</p>
 <ul>
@@ -153,7 +173,7 @@
 </ul>
 <p><strong>业务迭代的同时，如何与自身的过去比较</strong></p>
 <p>上面谈到了【贯穿层】的设计，贯穿层的设计其实不但可以应用在多个活动的场景，有些场景，我们的<strong>业务需要和去年或上个季度的自身对比，同时业务还不断在多个方面运用 AB Test 迭代</strong>。</p>
-<p><img src="1-11.png" alt="图片"></p>
+<p><img src="1-11.png" alt="图片" /></p>
 <p>类似与上面这种层次设计，在推荐系统中较为常见，<strong>在某一些产品或系统中，贯穿层不能够完全没有策略，那么采用去年或上个季度的策略，代表着基准值，从而量化新一个周期的增量贡献</strong></p>
 <p>我们可以量化：</p>
 <ul>
@@ -161,26 +181,32 @@
 <li>周期内，系统全部迭代与上个周期的比较：实验填充层 VS 贯穿层 1（或贯穿层 2）</li>
 <li>同时，可以量化去年策略的自然增长或下降，以衡量旧有系统是否具有<strong>长期的适用性</strong>（作为系统设计者，更应鼓励设计具有长期适应性的系统）：贯穿层 1（上个季度的策略）VS 贯穿层 2（去年的策略）</li>
 </ul>
-<h2 id="业界流行的-AB-测试架构实现方案"><a href="#业界流行的-AB-测试架构实现方案" class="headerlink" title="业界流行的 AB 测试架构实现方案"></a>业界流行的 AB 测试架构实现方案</h2><h3 id="通过定制的-AB-Test-SDK-来处理-AB-测试业务"><a href="#通过定制的-AB-Test-SDK-来处理-AB-测试业务" class="headerlink" title="通过定制的 AB Test SDK 来处理 AB 测试业务"></a>通过定制的 AB Test SDK 来处理 AB 测试业务</h3><p><img src="1-12.png" alt="图片"></p>
+<h2 id="业界流行的-ab-测试架构实现方案"><a class="markdownIt-Anchor" href="#业界流行的-ab-测试架构实现方案"></a> 业界流行的 AB 测试架构实现方案</h2>
+<h3 id="通过定制的-ab-test-sdk-来处理-ab-测试业务"><a class="markdownIt-Anchor" href="#通过定制的-ab-test-sdk-来处理-ab-测试业务"></a> 通过定制的 AB Test SDK 来处理 AB 测试业务</h3>
+<p><img src="1-12.png" alt="图片" /></p>
 <p>微博采用该方案</p>
 <p>该方案的好处是通过统一的 SDK 来对接 AB 分组服务，前端业务代码简单调用 SDK 的方法就可以，开发效率高。不好的点是，如果 AB  测试业务有调整，需要升级 SDK，较麻烦，同时，如果公司有 iOS、Android、PC 等多个业务的话，需要开发多套 SDK，维护成本较大。</p>
-<h3 id="在后端业务层增加相关组件来做-AB-测试"><a href="#在后端业务层增加相关组件来做-AB-测试" class="headerlink" title="在后端业务层增加相关组件来做 AB 测试"></a>在后端业务层增加相关组件来做 AB 测试</h3><ul>
+<h3 id="在后端业务层增加相关组件来做-ab-测试"><a class="markdownIt-Anchor" href="#在后端业务层增加相关组件来做-ab-测试"></a> 在后端业务层增加相关组件来做 AB 测试</h3>
+<ul>
 <li>AB 两组对比测试业务分别部署在不同的服务器，通过构建一层统一的 router 来分发流量。</li>
 </ul>
-<p><img src="1-13.png" alt="图片"></p>
+<p><img src="1-13.png" alt="图片" /></p>
 <p>谷歌，百度采用该方案</p>
 <p>该方案的优点是模块化，router 解决所有与 AB 测试相关问题，对 AB 测试业务做调整不需要前端版本升级，只需要升级后端服务即可。但是 Router 层是整个 AB 测试的核心，需要具备高并发高可用的能力，否则出现问题会影响 AB 测试能力的发挥。</p>
 <ul>
 <li>将 AB 两组对比测试业务实现逻辑写在同一个业务接口，全部业务逻辑在业务服务器完成。</li>
 </ul>
-<p><img src="1-14.png" alt="图片"></p>
+<p><img src="1-14.png" alt="图片" /></p>
 <p>大众点评采用该方案</p>
 <p>该方案当 AB 测试调整时也不需要前端做升级, 只需要修改 AB lib  包就可以了。该方案最大的缺点是如果公司采用多种开发语言做业务接口服务，需要每种开发语言维护一套 AB lib 库，维护成本较高。另外 AB  测试逻辑调整需要升级 AB lib 包时，需要对所有线上接口做升级，明显增加了风险。同时，在接口服务中整合 AB lib 与 AB  测试服务交互，增加了接口服务的复杂度，如果 AB 测试服务有问题，可能会影响接口功能或者性能。</p>
-<hr>
-<h1 id="推荐系统如何测试与评估"><a href="#推荐系统如何测试与评估" class="headerlink" title="推荐系统如何测试与评估"></a>推荐系统如何测试与评估</h1><h2 id="推荐算法接入-AB-测试框架的架构"><a href="#推荐算法接入-AB-测试框架的架构" class="headerlink" title="推荐算法接入 AB 测试框架的架构"></a>推荐算法接入 AB 测试框架的架构</h2><p>针对推荐系统(推荐算法、搜索算法、精准投放、精准运营等) 这种纯算法类的业务，通过在算法业务层跟 AB 测试服务交互来实现 AB 测试能力，不需要前端和接口层做任何处理</p>
-<p><img src="1-15.png" alt="图片"></p>
+<hr />
+<h1 id="推荐系统如何测试与评估"><a class="markdownIt-Anchor" href="#推荐系统如何测试与评估"></a> 推荐系统如何测试与评估</h1>
+<h2 id="推荐算法接入-ab-测试框架的架构"><a class="markdownIt-Anchor" href="#推荐算法接入-ab-测试框架的架构"></a> 推荐算法接入 AB 测试框架的架构</h2>
+<p>针对推荐系统(推荐算法、搜索算法、精准投放、精准运营等) 这种纯算法类的业务，通过在算法业务层跟 AB 测试服务交互来实现 AB 测试能力，不需要前端和接口层做任何处理</p>
+<p><img src="1-15.png" alt="图片" /></p>
 <p>前端和接口层不做任何处理，只需在业务中实现 AB 测试能力，并且不需要根据 AB 两组分别对全量用户计算推荐结果，也不需要为全量用户分别存储 AB 两个算法的推荐结果，大大减少计算时间和存储开销。</p>
-<h2 id="推荐算法接入-AB-测试框架的业务流"><a href="#推荐算法接入-AB-测试框架的业务流" class="headerlink" title="推荐算法接入 AB 测试框架的业务流"></a>推荐算法接入 AB 测试框架的业务流</h2><p><img src="1-16.png" alt="图片"></p>
+<h2 id="推荐算法接入-ab-测试框架的业务流"><a class="markdownIt-Anchor" href="#推荐算法接入-ab-测试框架的业务流"></a> 推荐算法接入 AB 测试框架的业务流</h2>
+<p><img src="1-16.png" alt="图片" /></p>
 <p>附-参考文章</p>
 <p><a href="https://www.infoq.cn/article/tmall-app-ab-test" target="_blank" rel="noopener">https://www.infoq.cn/article/tmall-app-ab-test</a></p>
 <p><a href="http://pingguohe.net/2018/02/23/virtualview-ios-1.2.html" target="_blank" rel="noopener">http://pingguohe.net/2018/02/23/virtualview-ios-1.2.html</a></p>
