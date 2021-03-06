@@ -1,7 +1,8 @@
 ---
 title: object detection API迁移到tf2
 date: 2020-11-22 22:42:16
-tags:
+tags: [tensorflow, 物体识别,人工智能]
+categories: 机器学习应用
 ---
 
 ### 目标
